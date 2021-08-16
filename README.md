@@ -1,2 +1,3 @@
-# Gan-
-Gan Code by Paper
+# Gan_Code_Paper
+* Gan Code by Paper
+* Repo for Gan Code For Paper
