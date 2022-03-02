@@ -6,14 +6,12 @@ import torch.nn as nn
 import torch.nn.init as init
 
 def weights_init(m):
+    # 가중치 초기화
     if isinstance(m, nn.Conv2d):
-        if m.conv.weight is not None:
-            if m.residual_init:
-                init.xavier_uniform_(m.conv.weight.data, gain=math.sqrt(2))
-            else:
-                init.xavier_uniform_(m.conv.weight.data)
-        if m.conv.bias is not None:
-            init.constant_(m.conv.bias.data, 0.0)
+        if m.weight is not None:
+            init.xavier_uniform_(m.weight.data)
+        if m.bias is not None:
+            init.constant_(m.bias.data, 0.0)
     if isinstance(m, nn.Linear):
         if m.weight is not None:
             init.xavier_uniform_(m.weight.data)
@@ -21,6 +19,7 @@ def weights_init(m):
             init.constant_(m.bias.data, 0.0)
 
 def print_network(model, name, out_file=None):
+    # 네트워크 정보 출력
     num_params = 0
     for p in model.parameters():
         num_params += p.numel()

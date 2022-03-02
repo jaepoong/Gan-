@@ -34,7 +34,7 @@ class Generator(nn.Module):
         return self.main(input)
 
 class Discriminator(nn.Module):
-    def __init__(self,nc=3,dis=64,):
+    def __init__(self,nc=3,dis=64):
         super(Discriminator,self).__init__()
         
         self.main = nn.Sequential(
@@ -46,7 +46,7 @@ class Discriminator(nn.Module):
             nn.LeakyReLU(0.2,inplace=True),
             
             nn.Conv2d(dis*2,dis*4,4,2,1,bias=False),
-            nn.BatchNorm2d(dis),
+            nn.BatchNorm2d(dis*4),
             nn.LeakyReLU(0.2,inplace=True),
             
             nn.Conv2d(dis*4,dis*8,4,2,1,bias=False),
@@ -54,5 +54,7 @@ class Discriminator(nn.Module):
             nn.LeakyReLU(0.2,inplace=True),
             
             nn.Conv2d(dis*8,1,4,1,0,bias=False),
-            nn.sigmoid()
+            nn.Sigmoid()
         )
+    def forward(self,input):
+        return self.main(input)
