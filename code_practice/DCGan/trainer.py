@@ -10,12 +10,13 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 from tqdm import tqdm
 import torchvision.utils as vutils
-
+import matplotlib.pyplot as plt
+import numpy as np
 def main(config):
     
     # Directory
-    if not os.path.exists(config.model_save_dir):
-        os.makedirs(config.model_save_dir)
+    if not os.path.exists(path+config.model_save_dir):
+        os.makedirs(path+config.model_save_dir)
     
     #GPU setting
     if torch.cuda.is_available():
@@ -125,6 +126,15 @@ def main(config):
     G.load_state_dict(torch.load(path+config.model_save_dir+"/G.pth"))
     D=Networks.Discriminator(dis=config.image_size)
     D.load_state_dict(torch.load(path+config.model_save_dir+"/D.pth"))
+    
+    figure=plt.figure(figsize=(8,8))
+    for i in range(1,10):
+        img=G(z)[i]
+        img.numpy()
+        figure.add_subplot(3,3,i)
+        plt.axis("off")
+        plt.imshow(np.transpose(img,(1,2,0)))
+    print(img.size())
         
 
 if __name__=="__main__":
@@ -157,8 +167,8 @@ if __name__=="__main__":
     parser.add_argument('--visualize_interval', type=int, default=5000, help="시각화 간격")
     
     # Directories    
-    parser.add_argument('--model_save_dir', type=str, default='/models',help="model의 가중치 저장 디렉터리")
-    parser.add_argument('--model_load_dir',type=str,default='/models',help="사용 시에 가중치 저장되어 있는 디렉터리")
+    parser.add_argument('--model_save_dir', type=str, default='/code_practice/DCGan/models',help="model의 가중치 저장 디렉터리")
+    parser.add_argument('--model_load_dir',type=str,default='/code_practice/DCGan/models',help="사용 시에 가중치 저장되어 있는 디렉터리")
     config=parser.parse_args()
-    print(path+config.dataroot)
+    print(path)
     main(config) 
