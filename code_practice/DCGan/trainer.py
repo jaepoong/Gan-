@@ -12,6 +12,8 @@ from tqdm import tqdm
 import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import numpy as np
+
+
 def main(config):
     
     # Directory
@@ -57,7 +59,7 @@ def main(config):
     
     sub.print_network(G,"Generator")
     sub.print_network(D,"Discriminator")
-    
+
     # scheduler
     Gscheduler=torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optG, T_0=10, T_mult=1, eta_min=0.00001, last_epoch=-1)
     Dshceduler=torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optD, T_0=10, T_mult=1, eta_min=0.00001, last_epoch=-1)
@@ -71,7 +73,7 @@ def main(config):
     iters=0
     print("훈련 시작")
     print(device)
-    for epoch in tqdm(range(config.num_iterations)):
+    for epoch in tqdm(range(1)):
         for i,data in enumerate(iterator,0):
             G.train()
             D.train()
@@ -115,11 +117,13 @@ def main(config):
             D_losses.append(errD.item())
             
             
-            if (iters % 500 == 0) or ((epoch == config.num_iterations-1) and (i == len()-1)):
+            if (iters % 500 == 0):
                 with torch.no_grad():
                     fake = G(fixed_noise).detach().cpu()
                 img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
             iters += 1
+    
+    
     torch.save(G.state_dict(),path+config.model_save_dir+"/G.pth")
     torch.save(D.state_dict(),path+config.model_save_dir+"/D.pth")
     G=Networks.Generator(nz=config.nz,gis=config.image_size)
@@ -128,8 +132,11 @@ def main(config):
     D.load_state_dict(torch.load(path+config.model_save_dir+"/D.pth"))
     
     figure=plt.figure(figsize=(8,8))
+    G.eval()
+    
+
     for i in range(1,10):
-        img=G(z)[i]
+        img=G(z[i])
         img.numpy()
         figure.add_subplot(3,3,i)
         plt.axis("off")
